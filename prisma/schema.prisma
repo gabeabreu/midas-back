@@ -11,24 +11,20 @@ datasource db {
 }
 
 model User {
-  id         Int     @id @default(autoincrement())
-  name       String
-  bio        String
-  email      String
-  address    String
-  isVerified Boolean
+  address           String   @id
+  name              String?
+  bio               String?
+  instagram         String?
+  twitter           String?
+  website           String?
+  discord           String?
+  isVerified        Boolean?
+  profilePictureUrl String?
+  bannerPictureUrl  String?
 }
 
-model ProfilePicture {
-  id      Int    @id @default(autoincrement())
-  userId  Int    @unique
-  format  String
-  version String
-}
-
-model BannerPicture {
-  id      Int    @id @default(autoincrement())
-  userId  Int    @unique
-  format  String
-  version String
+model Collection {
+  id       Int      @id @default(autoincrement())
+  address  String   @unique
+  mintDate DateTime
 }

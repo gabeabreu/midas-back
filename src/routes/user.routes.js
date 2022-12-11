@@ -1,80 +1,128 @@
 const express = require('express');
+const { user } = require('../../prisma/client');
 const prisma = require('../../prisma/client');
 const userRoutes = express.Router();
 
-const allUsers = [];
-
 //create user
 userRoutes.post('/users', async (req, res) => {
-  const { name } = req.body;
-  const { bio } = req.body;
-  const { email } = req.body;
-  const { address } = req.body;
-  const { isVerified } = req.body;
+  const {
+    name,
+    bio,
+    instagram,
+    twitter,
+    website,
+    discord,
+    address,
+    isVerified,
+    profilePictureUrl,
+    bannerPictureUrl,
+  } = req.body;
+
+  const userAlreadyExist = await prisma.user.findUnique({ where: { address } });
+
+  if (userAlreadyExist) return res.status(302).json(userAlreadyExist);
+
   const newUser = await prisma.user.create({
     data: {
       name,
       bio,
-      email,
+      instagram,
+      twitter,
+      website,
+      discord,
       address,
       isVerified,
+      profilePictureUrl,
+      bannerPictureUrl,
     },
   });
-  allUsers.push({ name, bio, email, address, isVerified });
-  return res.status(201).json(allUsers);
+
+  return res.status(201).json(newUser);
 });
 
-//read users
+//all users
 userRoutes.get('/users', async (req, res) => {
   const users = await prisma.user.findMany();
+
+  if (!users) return res.status(204).json('Nenhum usuário cadastrado');
   return res.status(200).json(users);
 });
 
-//update user
+//update user(or add field)
 userRoutes.put('/users', async (req, res) => {
-  const { id, name, bio, email, address, isVerified } = req.body;
+  const {
+    name,
+    bio,
+    instagram,
+    twitter,
+    website,
+    discord,
+    address,
+    isVerified,
+    profilePictureUrl,
+    bannerPictureUrl,
+  } = req.body;
 
-  if (!id)
+  if (!address)
     return res
-      .status(400)
-      .json('Id é obrigatório e não foi passado como parâmetro');
+      .status(406)
+      .json('Address é obrigatório e não foi passado como parâmetro');
 
-  const isUserValid = prisma.user.findUnique({ where: { id } });
+  const isUserValid = await prisma.user.findUnique({ where: { address } });
 
   if (!isUserValid) return res.status(404).json('Esse usuário não existe');
 
   const user = await prisma.user.update({
     where: {
-      id,
+      address,
     },
     data: {
       name,
       bio,
-      email,
+      instagram,
+      twitter,
+      website,
+      discord,
       address,
       isVerified,
+      profilePictureUrl,
+      bannerPictureUrl,
     },
   });
 
-  return res.status(200).json(user);
+  return res.status(201).json(user);
 });
 
 //delete user
 userRoutes.delete('/users', async (req, res) => {
-  const { id } = req.body;
+  const { address } = req.body;
 
-  if (!id)
+  if (!address)
     return res
       .status(400)
-      .json('Id é obrigatório e não foi passado como parâmetro');
+      .json('address é obrigatório e não foi passado como parâmetro');
 
-  const isUserValid = prisma.user.findUnique({ where: { id } });
+  const isUserValid = prisma.user.findUnique({ where: { address } });
 
   if (!isUserValid) return res.status(404).json('Esse usuário não existe');
 
-  await prisma.user.delete({ where: { id } });
+  await prisma.user.delete({ where: { address } });
 
   return res.status(200);
+});
+
+//specific user (and check if the address is already in DB)
+userRoutes.post('/users/find', async (req, res) => {
+  const { address } = req.body;
+
+  console.log(req.body);
+  if (!address)
+    return res.status(400).json('Address deve ser passado como parâmetro');
+
+  const user = await prisma.user.findUnique({ where: { address } });
+
+  if (!user) return res.status(404).json('Usuário não encontrado');
+  else return res.status(200).json(user);
 });
 
 module.exports = userRoutes;
