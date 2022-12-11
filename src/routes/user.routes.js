@@ -48,6 +48,16 @@ userRoutes.get('/users', async (req, res) => {
   return res.status(200).json(users);
 });
 
+//verified users
+userRoutes.get('/users/verified', async (req, res) => {
+  const verifiedUsers = await prisma.user.findMany({
+    where: { isVerified: true },
+  });
+
+  if(verifiedUsers.length) return res.status(200).json(verifiedUsers)
+  return res.status(404).json("Nenhum verified cadastrado")
+});
+
 //update user(or add field)
 userRoutes.put('/users', async (req, res) => {
   const {
