@@ -6,11 +6,17 @@ const collectionRoutes = express.Router();
 //create
 collectionRoutes.post('/collections', async (req, res) => {
   const { address } = req.body;
+  const { userOwnerAddress } = req.body;
+  const { userOwnerName } = req.body;
+  const { imageUrl } = req.body;
   const mintDate = new Date();
 
   const newCollection = await prisma.collection.create({
     data: {
       address,
+      userOwnerAddress,
+      userOwnerName,
+      imageUrl,
       mintDate,
     },
   });
@@ -36,7 +42,7 @@ collectionRoutes.get('/collections/trending', async (req, res) => {
 
 //update
 collectionRoutes.put('/collections', async (req, res) => {
-  const { id, address, mintDate } = req.body;
+  const { id, address, userOwnerAddress, userOwnerName, imageUrl, mintDate } = req.body;
 
   if (!id)
     return res
@@ -52,6 +58,9 @@ collectionRoutes.put('/collections', async (req, res) => {
     where: { id },
     data: {
       address,
+      userOwnerAddress,
+      userOwnerName,
+      imageUrl,
       mintDate,
     },
   });
