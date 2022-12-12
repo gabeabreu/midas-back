@@ -34,11 +34,13 @@ collectionRoutes.get('/collections', async (req, res) => {
 
 collectionRoutes.post("collections/find", async (req, res) => {
   const { address } = req.body;
+
+  const upperAddress = address.toUpperCase();
   
   if (!address)
     return res.status(400).json('Address deve ser passado como parâmetro');
-
-  const collection = await prisma.collection.findUnique({ where: { address }});
+  
+  const collection = await prisma.collection.findUnique({ where: { upperAddress }});
 
   if(!collection) return res.status(404).json("Coleção não encontrada");
   else return res.status(200).json(collection);
