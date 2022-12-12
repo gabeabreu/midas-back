@@ -26,8 +26,8 @@ model User {
 
 model Collection {
   address          String   @unique
-  userOwnerAddress String?
-  userOwnerName    String?
-  imageUrl         String?
+  userOwnerAddress String
+  userOwnerName    String
+  imageUrl         String
   mintDate         DateTime
 }
