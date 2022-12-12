@@ -30,6 +30,19 @@ collectionRoutes.get('/collections', async (req, res) => {
   return res.status(200).json(collections);
 });
 
+//specific
+collectionRoutes.post("collections/find", async (req, res) => {
+  const { address } = req.body;
+  
+  if (!address)
+    return res.status(400).json('Address deve ser passado como parâmetro');
+
+  const collection = await prisma.collection.findUnique({ where: { address }});
+
+  if(!collection) return res.status(404).json("Coleção não encontrada");
+  else return res.status(200).json(collection);
+})
+
 collectionRoutes.get('/collections/trending', async (req, res) => {
   const collections = await prisma.collection.findMany({
     orderBy: {

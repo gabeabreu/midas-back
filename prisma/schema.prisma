@@ -21,6 +21,7 @@ model User {
   isVerified        Boolean?
   profilePictureUrl String?
   bannerPictureUrl  String?
+  collectionsMinted String[]
 }
 
 model Collection {

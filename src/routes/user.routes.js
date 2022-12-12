@@ -16,6 +16,7 @@ userRoutes.post('/users', async (req, res) => {
     isVerified,
     profilePictureUrl,
     bannerPictureUrl,
+    collectionsMinted
   } = req.body;
 
   const userAlreadyExist = await prisma.user.findUnique({ where: { address } });
@@ -34,6 +35,7 @@ userRoutes.post('/users', async (req, res) => {
       isVerified,
       profilePictureUrl,
       bannerPictureUrl,
+      collectionsMinted
     },
   });
 
@@ -71,6 +73,7 @@ userRoutes.put('/users', async (req, res) => {
     isVerified,
     profilePictureUrl,
     bannerPictureUrl,
+    collectionsMinted
   } = req.body;
 
   if (!address)
@@ -97,6 +100,7 @@ userRoutes.put('/users', async (req, res) => {
       isVerified,
       profilePictureUrl,
       bannerPictureUrl,
+      collectionsMinted
     },
   });
 
@@ -125,7 +129,6 @@ userRoutes.delete('/users', async (req, res) => {
 userRoutes.post('/users/find', async (req, res) => {
   const { address } = req.body;
 
-  console.log(req.body);
   if (!address)
     return res.status(400).json('Address deve ser passado como parâmetro');
 
