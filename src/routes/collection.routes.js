@@ -26,11 +26,12 @@ collectionRoutes.post('/collections', async (req, res) => {
 
 //read
 collectionRoutes.get('/collections', async (req, res) => {
-  const collections = await prisma.collections.findMany();
+  const collections = await prisma.collection.findMany();
+  
+  if (!collections) return res.status(204).json('Nenhuma coleção cadastrada');
   return res.status(200).json(collections);
 });
 
-//specific
 collectionRoutes.post("collections/find", async (req, res) => {
   const { address } = req.body;
   
