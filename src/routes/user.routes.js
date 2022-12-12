@@ -116,7 +116,7 @@ userRoutes.delete('/users', async (req, res) => {
       .status(400)
       .json('address é obrigatório e não foi passado como parâmetro');
 
-  const isUserValid = prisma.user.findUnique({ where: { address } });
+  const isUserValid = await prisma.user.findUnique({ where: { address } });
 
   if (!isUserValid) return res.status(404).json('Esse usuário não existe');
 
