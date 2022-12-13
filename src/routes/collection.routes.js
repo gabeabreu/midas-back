@@ -44,14 +44,14 @@ collectionRoutes.get("/collections/find", async (req, res) => {
   else return res.status(200).json(collection);
 })
 
-collectionRoutes.get('/collections/trending', async (req, res) => {
+collectionRoutes.get('/collections/new', async (req, res) => {
   const collections = await prisma.collection.findMany({
     orderBy: {
       mintDate: 'desc',
     },
   });
 
-  return res.status(200).json(collections.slice(0, 3));
+  return res.status(200).json(collections.slice(0, 8));
 });
 
 //update
